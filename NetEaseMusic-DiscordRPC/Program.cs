@@ -48,6 +48,8 @@ namespace NetEaseMusic_DiscordRPC
         public static WebClient discordClient = new WebClient();
         public static HttpClient httpClient = new HttpClient();
         public static DiscordRpc.RichPresence presence = null;
+
+        public static Dictionary<string, bool> deletedAssets = new Dictionary<string, bool>();
     }
 
     static class player
@@ -225,9 +227,14 @@ namespace NetEaseMusic_DiscordRPC
             {
                 //Json parsing
                 dynamic result = JsonConvert.DeserializeObject(e.Result);
-                player.endPlaying = (long)Math.Round((double)(result.songs[0].dt / 1000.0), MidpointRounding.AwayFromZero) + player.startPlaying;
-                player.albumName = result.songs[0].al.name;
-                player.albumArtUrl = result.songs[0].al.picUrl + "?param=128y128";
+
+                if (result.songs[0].dt != null)
+                    player.endPlaying = (long)Math.Round((double)(result.songs[0].dt / 1000.0), MidpointRounding.AwayFromZero) + player.startPlaying;
+                if(result.songs[0].al.name != null)
+                    player.albumName = result.songs[0].al.name;
+                if (result.songs[0].al.picUrl != null)
+                    player.albumArtUrl = result.songs[0].al.picUrl + "?param=128y128";
+
                 Console.WriteLine("Successful HTTP Request, updated song duration");
             }
             catch (Exception ex)
@@ -241,7 +248,7 @@ namespace NetEaseMusic_DiscordRPC
 
             player.albumHash = Utility.CreateMD5(player.albumName).ToLower().Substring(0,8);
             Console.WriteLine("album hash of " + player.albumName + " is " + player.albumHash);
-            if (player.albumArtUrl != null && lastAlbum != player.albumName)
+            if (player.albumArtUrl != null && lastAlbum != player.albumName && !player.albumName.Equals("Unknown Album"))
             {
                 ManageCachedAssests();
             }
@@ -268,10 +275,18 @@ namespace NetEaseMusic_DiscordRPC
             }
 
             List<AlbumAsset> albumAssets = new List<AlbumAsset>();
+            Dictionary<string, bool> cachedAssets = new Dictionary<string, bool>();
 
             foreach (RPAsset asset in allAssests)
             {
                 if (!asset.name.StartsWith(info.AlbumAssetPrefix)) continue;
+
+                //Skip assets that are deleted but not uploaded yet
+                bool deleted = false;
+                global.deletedAssets.TryGetValue(asset.id, out deleted);
+                if (deleted) continue;
+
+
                 string[] assetArray = asset.name.Split('_');
 
                 //If the album art is already uploaded
@@ -287,6 +302,17 @@ namespace NetEaseMusic_DiscordRPC
 
                     break;
                 }
+
+                bool duplicate = false;
+                cachedAssets.TryGetValue(assetArray[1], out duplicate);
+                if (duplicate)
+                {
+                    await Task.Run(() => DeleteAsset(asset.id));
+                    Console.WriteLine("Deleting duplicated asset with hash: " + assetArray[1]);
+                    continue;
+                }
+                
+                cachedAssets.Add(assetArray[1], true);
 
                 AlbumAsset albumAsset = new AlbumAsset();
                 albumAsset.name = asset.name;
@@ -314,9 +340,11 @@ namespace NetEaseMusic_DiscordRPC
         {
             try
             {
+                Console.WriteLine("Deleting " + id);
                 var response = await global.httpClient.DeleteAsync("https://discord.com/api/v6/oauth2/applications/" + info.ApplicationId + "/assets/" + id);
-                Console.WriteLine(response.StatusCode + " when deleting " + id);
-                Console.WriteLine("Delete an unused asset");
+                Console.WriteLine((int)response.StatusCode + " when deleting " + id);
+                if(response.StatusCode == HttpStatusCode.NotFound || response.StatusCode == HttpStatusCode.NoContent)
+                    global.deletedAssets.Add(id, true);
             }
             catch (Exception e)
             {
@@ -394,7 +422,7 @@ namespace NetEaseMusic_DiscordRPC
         {
             updateCounter++;
 
-            if (updateCounter % 15 == 0) player.requireUpdate = true;
+            if (updateCounter % 15 == 0) UpdatePresenceAdvancedInfo();
             // Block thread.
             Thread.Sleep(1000);
 
@@ -498,7 +526,7 @@ namespace NetEaseMusic_DiscordRPC
                     //Updates the status in taskbar, to help user debug
                     tray.neteaseStatusDisplay.Text = "Now Playing: " + text[0];
                     global.presence.details = text[0];
-                    if(text[1].Length > 0)
+                    if (text[1].Length > 0)
                         global.presence.state = "by " + text[1]; // like spotify
                     else
                         global.presence.state = "by Unknown Artist"; // like spotify
@@ -518,7 +546,12 @@ namespace NetEaseMusic_DiscordRPC
 
         private static void UpdatePresenceAdvancedInfo()
         {
-            Console.WriteLine(player.albumKey);
+            if (global.presence == null)
+            {
+                // uninitialized
+                return;
+            }
+
             global.presence.largeImageKey = player.albumKey;
             global.presence.largeImageText = player.albumName;
 
