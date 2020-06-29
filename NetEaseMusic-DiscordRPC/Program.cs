@@ -246,8 +246,9 @@ namespace NetEaseMusic_DiscordRPC
 
             UpdatePresenceAdvancedInfo();
 
-            player.albumHash = Utility.CreateMD5(player.albumName).ToLower().Substring(0,8);
+            player.albumHash = Utility.CreateMD5(player.albumName).ToLower();
             Console.WriteLine("album hash of " + player.albumName + " is " + player.albumHash);
+            player.albumHash = player.albumHash.Substring(0, 8);
             if (player.albumArtUrl != null && lastAlbum != player.albumName && !player.albumName.Equals("Unknown Album"))
             {
                 ManageCachedAssests();
