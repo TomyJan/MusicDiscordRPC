@@ -50,6 +50,7 @@ namespace NetEaseMusic_DiscordRPC
         public static DiscordRpc.RichPresence presence = null;
 
         public static Dictionary<string, bool> deletedAssets = new Dictionary<string, bool>();
+        public static bool noToken = false;
     }
 
     static class player
@@ -129,7 +130,13 @@ namespace NetEaseMusic_DiscordRPC
                 }
             }catch(Exception e)
             {
-                MessageBox.Show("Failed to read secret.txt, using default application", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Failed to read secret.txt, refer to readme.md for help!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(-1);
+            }
+
+            if(info.ApplicationId.Length < 1 || info.DefaultPresenceImageKey.Length < 1)
+            {
+                MessageBox.Show("Failed to read secret.txt, refer to readme.md for help!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(-1);
             }
 
@@ -142,8 +149,9 @@ namespace NetEaseMusic_DiscordRPC
             global.musicidClient.DownloadStringCompleted += MusicIdRequestCompleted;
             global.musicidClient.Encoding = Encoding.UTF8;
 
-            // Setting up http client authorization
-            global.httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(info.DiscordUserToken);
+            if (info.DiscordUserToken.Length > 1)
+                // Setting up http client authorization
+                global.httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(info.DiscordUserToken);
 
             // Discord event
             global.events.readyCallback += DiscordRpc_Connected;
@@ -182,10 +190,14 @@ namespace NetEaseMusic_DiscordRPC
 
             tray.exitButton.Click += new EventHandler(ApplicationHandler_TrayIcon);
 
-            // Show notification
-            tray.notifyIcon.BalloonTipTitle = "NetEase Cloud Music DiscordRPC";
-            tray.notifyIcon.BalloonTipText = "External Plugin Started!";
-            tray.notifyIcon.ShowBalloonTip(5000);
+            if (info.DiscordUserToken.Length < 1) FaultyToken();
+            else
+            {
+                // Show notification
+                tray.notifyIcon.BalloonTipTitle = "NetEase Music DiscordRPC";
+                tray.notifyIcon.BalloonTipText = "External Plugin Started!";
+                tray.notifyIcon.ShowBalloonTip(5000);
+            }
 
             // Run
             Application.Run();
@@ -249,16 +261,17 @@ namespace NetEaseMusic_DiscordRPC
             player.albumHash = Utility.CreateMD5(player.albumName).ToLower();
             Console.WriteLine("album hash of " + player.albumName + " is " + player.albumHash);
             player.albumHash = player.albumHash.Substring(0, 8);
+
             if (player.albumArtUrl != null && lastAlbum != player.albumName && !player.albumName.Equals("Unknown Album"))
             {
-                ManageCachedAssests();
+                ManageAssests();
             }
 
             player.loadingApi = false;
             Console.WriteLine("Updated song info from results from netease API");
         }
 
-        private static async void ManageCachedAssests()
+        private static async void ManageAssests()
         {
             bool needUpload = true;
             string rawCurrentAssets;
@@ -337,13 +350,26 @@ namespace NetEaseMusic_DiscordRPC
                 UploadArt(player.albumArtUrl, player.albumHash);
         }
 
+        private static void FaultyToken()
+        {
+            Console.WriteLine("Faulty Token!");
+
+            global.noToken = true;
+            tray.notifyIcon.BalloonTipTitle = "NetEase Music DiscordRPC";
+            tray.notifyIcon.BalloonTipText = "Discord token in secret.txt is either missing or faulty. Uploading new album art is disabled. Restart the program to retry.";
+            tray.notifyIcon.ShowBalloonTip(8000);
+        }
+
         private static async void DeleteAsset(string id)
         {
+            if (global.noToken)
+                return;    
             try
             {
                 Console.WriteLine("Deleting " + id);
                 var response = await global.httpClient.DeleteAsync("https://discord.com/api/v6/oauth2/applications/" + info.ApplicationId + "/assets/" + id);
                 Console.WriteLine((int)response.StatusCode + " when deleting " + id);
+                if (response.StatusCode == HttpStatusCode.Unauthorized) FaultyToken();
                 if(response.StatusCode == HttpStatusCode.NotFound || response.StatusCode == HttpStatusCode.NoContent)
                     global.deletedAssets.Add(id, true);
             }
@@ -356,6 +382,9 @@ namespace NetEaseMusic_DiscordRPC
 
         private static async void UploadArt(string albumArtUrl, string albumNameHash)
         {
+            if (global.noToken)
+                return;
+
             string imageString = null;
 
             try
@@ -385,14 +414,20 @@ namespace NetEaseMusic_DiscordRPC
             try
             {
                 request.Content = new StringContent("{\"name\":\"" + albumKey + "\", \"type\" : \"1\", \"image\": \"data:image/png;base64," + imageString + "\"}", Encoding.UTF8, "application/json");
-                await global.httpClient.SendAsync(request);
-                Console.WriteLine("Uploaded new album art");
+                var response = await global.httpClient.SendAsync(request);
+                if (response.StatusCode == HttpStatusCode.Unauthorized) {
+                    player.albumKey = info.DefaultPresenceImageKey;
+                    FaultyToken();
+                }
+                Console.WriteLine("Uploaded new album art, response code " + (int)response.StatusCode);
             }catch(Exception e)
             {
                 Console.WriteLine("Error uploading new album art");
                 Console.WriteLine(e.StackTrace);
                 return;
             }
+
+            if (global.noToken) return;
 
             //Wait 10 second to apply the new albumkey, as the image takes time to be processed at discord's end
             Thread.Sleep(10000);
