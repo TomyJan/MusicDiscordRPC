@@ -80,9 +80,6 @@ namespace NetEaseMusic_DiscordRPC
         [STAThread]
         static void Main(string[] args)
         {
-            // Hide window
-            //Win32Api.User32.ShowWindow(Process.GetCurrentProcess().MainWindowHandle, Win32Api.User32.SW_HIDE);
-
             // check run once
             Mutex self = new Mutex(true, "NetEase Cloud Music DiscordRPC", out bool allow);
             if (!allow)
@@ -127,6 +124,9 @@ namespace NetEaseMusic_DiscordRPC
                     info.ApplicationId = sr.ReadLine().Trim();
                     info.DefaultPresenceImageKey = sr.ReadLine().Trim();
                     info.DiscordUserToken = sr.ReadLine().Trim();
+                    if(!sr.ReadLine().Trim().Trim().Equals("true"))
+                        // Hide window
+                        Win32Api.User32.ShowWindow(Process.GetCurrentProcess().MainWindowHandle, Win32Api.User32.SW_HIDE);
                 }
             }catch(Exception e)
             {
@@ -247,11 +247,11 @@ namespace NetEaseMusic_DiscordRPC
                 if (result.songs[0].al.picUrl != null)
                     player.albumArtUrl = result.songs[0].al.picUrl + "?param=128y128";
 
-                Console.WriteLine("Successful HTTP Request, updated song duration");
+                Console.WriteLine("Succesffuly retrieved song info from results from netease API");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error parsing json from http request");
+                Console.WriteLine("Error parsing json from http request from netease API");
                 Console.WriteLine("The error causing json: ");
                 Console.WriteLine(e.Result);
             }
@@ -268,7 +268,6 @@ namespace NetEaseMusic_DiscordRPC
             }
 
             player.loadingApi = false;
-            Console.WriteLine("Updated song info from results from netease API");
         }
 
         private static async void ManageAssests()
@@ -576,7 +575,7 @@ namespace NetEaseMusic_DiscordRPC
                 UpdatePresenceAdvancedInfo();
 
                 // logging
-                Console.WriteLine("updated new result");
+                Console.WriteLine("Updated Rich Presence");
             }
         }
 
