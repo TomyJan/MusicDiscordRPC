@@ -7,7 +7,7 @@
 ### Info / 需知
 * This application will auto launch on system start. If you don't want to do this, disable it in taskmgr.
 * 这个软件会在你开机的时候自启动, 如果你不需要可以在任务管理器中禁用. 
-* If you are using album cover, and you change songs too fast, the album cover might disappear and stop working for **a few minutes**. You just have to wait.
+* If you are using album cover and you change songs too fast, the album cover might disappear and stop working for **a few minutes**. You just have to wait.
 * 如果你开启了专辑封面，然后快速连续切歌，专辑封面可能会消失**几分钟**。等一下就好了。
 
   
