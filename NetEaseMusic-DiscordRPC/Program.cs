@@ -139,6 +139,7 @@ namespace NetEaseMusic_DiscordRPC
                 MessageBox.Show("Failed to read secret.txt, refer to readme.md for help!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(-1);
             }
+            if (info.DiscordUserToken.StartsWith("\"")) info.DiscordUserToken =  info.DiscordUserToken.Replace('\"', ' ').Trim();
 
             // Auto Startup
             Win32Api.Registry.SetAutoStartup();
