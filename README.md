@@ -1,61 +1,14 @@
 # Netease Cloud Music Discord Rpc
   
-Enables Discord [Rich Presence](https://discordapp.com/rich-presence) For Netease Cloud Music.  
-将网易云音乐动态同步到Discord.  
+* Enables Discord [Rich Presence](https://discordapp.com/rich-presence) For Netease Cloud Music.  
+* 将网易云音乐动态同步到Discord.  
   
   
 ### Info / 需知
-* This application will auto launch on system start. If you don't want to do this, disable it in taskmgr.  
-* 这个软件会在你开机的时候自启动, 如果你不需要可以在任务管理器中禁用.  
-
-### How To / 教程
-
-#### Album Cover / 专辑封面
-
-You must complete both of the steps below to get album cover.
-下面两部分你都要做.
-
-##### Discord Application / Discord 应用
-You can only add Rich Presence assets to your own Discord Applications, so you'd have to create one.
-你只能给自己的Discord 应用加Rich Presence图片，所以你需要去创建一个。
-
-1. Go to **https://discord.com/developers/applications** and login / 登录 https://discord.com/developers/applications
-2. **"New Application"** button on the right top corner / 点击右上角 "New Application" 按钮
-3. Give it a name, this name will be displayed as the "game" you are playing when using this software / 给你的应用起个名字，这个名字会在使用这个软件的时候显示
-![screenshot](https://i.imgur.com/oKiRiqj.png)
-4. Copy the **Client ID** to line 1 of secret.txt / 把 Client ID 复制到secret.txt的第一行
-5. Open the **Rich Presence** tab on the left / 左边打开"Rich Presence"页
-6. Click on **"Add Image(s)"** and upload whatever image you want to use as the "blank" album cover / 点击"Add Image(s)"上传你的默认专辑封面
-
-I've included some netease music logo in the "default images" folder in release.zip if you want to use that
-我在release.zip的"default images"文件夹里存了些网易云音乐logo，你可以就用它们
-
-7. Copy the **asset name** and paste it to line 2 of secret.txt / 把你刚刚上传的文件名复制到secret.txt的第二行
-
-##### Token / 用户令牌
-Displaying of the album cover will require your discord user token.
-显示专辑封面需要你的Discord用户令牌.
-Automating user accounts is technically against TOS, use at your own risk.
-自动化账号其实是违反Discord TOS的，我还没听说过谁因为这个被封号，但是使用后果自负.
-
-1. Open Discord / 打开Discord
-2. Press **Ctrl+Shift+I** to show developer tools / 按下 Ctrl+Shift+I 打开开发者面板
-3. Navigate to the **Application** tab / 右上角找到 Application 标签并打开
-4. Select **Local Storage** > **h<span>ttp</span>s://discordapp.com** on the left / 面板左边找到 Local Storage > h<span>ttp</span>s://discordapp.com 并打开
-5. Press **Ctrl+R** to reload / 按下 Ctrl+R 刷新
-6. Find **token** at the bottom and copy the value / 列表末端会出现 token，复制它
-7. Paste the token into **line 3** of **secret.txt** / 把刚刚复制的 token 粘贴到 secret.txt 的第三行
-
-Note that the quotation sign surrounding the "token" can be left on, and will be removed automatically.
-"token" 两边的双引号会被自动去除
-
-
-#### Whitelist / 应用白名单
-When applications in the whitelist is running, Netease Cloud Music's rich presence will pause.
-白名单应用运行时，网易云音乐的Rich Presence会暂停.
-* To add Application to whilelist, edit windows.txt. More info see [FindWindow](https://msdn.microsoft.com/en-us/library/windows/desktop/ms633499(v=vs.85).aspx)
-* 要添加软件到白名单, 只需要在windows.txt新增一行输入白名单程序的lpClassName. 查看文档 [FindWindow](https://msdn.microsoft.com/en-us/library/windows/desktop/ms633499(v=vs.85).aspx)
-  
+* This application will auto launch on system start. If you don't want to do this, disable it in taskmgr.
+* 这个软件会在你开机的时候自启动, 如果你不需要可以在任务管理器中禁用. 
+* If you are using album cover, and you change songs too fast, the album cover might disappear and stop working for **a few minutes**. You just have to wait.
+* 如果你开启了专辑封面，然后快速连续切歌，专辑封面可能会消失**几分钟**。等一下就好了。
 
   
 ### Feature / 功能
@@ -67,6 +20,56 @@ When applications in the whitelist is running, Netease Cloud Music's rich presen
 * 清除动态当你运行全屏程序或者其他白名单程序. (例如你全屏游玩CSGO或者打开了VisualStudio)
   
   
-  
 ### Screenshot / 截图
 ![Screenshot](https://i.imgur.com/7rzkkRb.png)
+
+
+### How To / 教程
+
+#### Album Cover / 专辑封面
+
+* You must complete both of the steps below to get album cover.
+* 下面两部分需要全部完成才能启用专辑封面
+
+##### Discord Application / Discord 应用
+* You can only add Rich Presence assets to your own Discord Applications, so you'd have to create one.
+* 你只能给自己的Discord 应用加Rich Presence图片，所以你需要去创建一个。
+
+1. Go to **https://discord.com/developers/applications** and login / 登录 https://discord.com/developers/applications
+2. **"New Application"** button on the right top corner / 点击右上角 "New Application" 按钮
+3. Give it a name, this name will be displayed as the "game" you are playing when using this software / 给你的应用起个名字，这个名字会在使用这个软件的时候显示
+![screenshot](https://i.imgur.com/oKiRiqj.png)
+4. Copy the **Client ID** to line 1 of secret.txt / 把 Client ID 复制到secret.txt的第一行
+5. Open the **Rich Presence** tab on the left / 左边打开"Rich Presence"页
+6. Click on **"Add Image(s)"** and upload whatever image you want to use as the "blank" album cover / 点击"Add Image(s)"上传你的默认专辑封面
+
+* I've included some netease music logo in the "default images" folder in release.zip if you want to use that
+* 我在release.zip的"default images"文件夹里存了些网易云音乐logo，你可以就用它们
+
+7. Copy the **asset name** and paste it to line 2 of secret.txt / 把你刚刚上传的文件名复制到secret.txt的第二行
+
+##### Token / 用户令牌
+* Displaying of the album cover will require your discord user token.
+* 显示专辑封面需要你的Discord用户令牌.
+* Automating user accounts is technically against TOS, use at your own risk.
+* 自动化账号其实是违反Discord TOS的，我还没听说过谁因为这个被封号，但是使用后果自负.
+
+1. Open Discord / 打开Discord
+2. Press **Ctrl+Shift+I** to show developer tools / 按下 Ctrl+Shift+I 打开开发者面板
+3. Navigate to the **Application** tab / 右上角找到 Application 标签并打开
+4. Select **Local Storage** > **h<span>ttp</span>s://discordapp.com** on the left / 面板左边找到 Local Storage > h<span>ttp</span>s://discordapp.com 并打开
+5. Press **Ctrl+R** to reload / 按下 Ctrl+R 刷新
+6. Find **token** at the bottom and copy the value / 列表末端会出现 token，复制它
+7. Paste the token into **line 3** of **secret.txt** / 把刚刚复制的 token 粘贴到 secret.txt 的第三行
+
+* Note that the quotation sign surrounding the "token" can be left on, and will be removed automatically.
+"token"
+* 两边的双引号会被自动去除
+
+
+#### Whitelist / 应用白名单
+When applications in the whitelist is running, Netease Cloud Music's rich presence will pause.
+白名单应用运行时，网易云音乐的Rich Presence会暂停.
+* To add Application to whilelist, edit windows.txt. More info see [FindWindow](https://msdn.microsoft.com/en-us/library/windows/desktop/ms633499(v=vs.85).aspx)
+* 要添加软件到白名单, 只需要在windows.txt新增一行输入白名单程序的lpClassName. 查看文档 [FindWindow](https://msdn.microsoft.com/en-us/library/windows/desktop/ms633499(v=vs.85).aspx)
+  
