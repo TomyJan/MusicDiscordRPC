@@ -190,7 +190,15 @@ namespace NetEaseMusic_DiscordRPC
 
             tray.exitButton.Click += new EventHandler(ApplicationHandler_TrayIcon);
 
-            if (info.DiscordUserToken.Length < 1) FaultyToken();
+            if (info.DiscordUserToken.Length < 1)
+            {
+                global.noToken = true;
+                Console.WriteLine("Missing Token!");
+
+                tray.notifyIcon.BalloonTipTitle = "NetEase Music DiscordRPC";
+                tray.notifyIcon.BalloonTipText = "Discord token in secret.txt is missing. Uploading new album art is disabled.";
+                tray.notifyIcon.ShowBalloonTip(7000);
+            }
             else
             {
                 // Show notification
@@ -356,7 +364,7 @@ namespace NetEaseMusic_DiscordRPC
 
             global.noToken = true;
             tray.notifyIcon.BalloonTipTitle = "NetEase Music DiscordRPC";
-            tray.notifyIcon.BalloonTipText = "Discord token in secret.txt is either missing or faulty. Uploading new album art is disabled. Restart the program to retry.";
+            tray.notifyIcon.BalloonTipText = "Discord token in secret.txt is faulty. Uploading new album art is disabled. Restart the program to retry.";
             tray.notifyIcon.ShowBalloonTip(8000);
         }
 
