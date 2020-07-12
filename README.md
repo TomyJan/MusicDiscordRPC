@@ -3,6 +3,7 @@
 * Enables Discord [Rich Presence](https://discordapp.com/rich-presence) For Netease Cloud Music.  
 * 将网易云音乐动态同步到Discord.  
   
+### [Download / 下载](https://github.com/Ynng/NetEase-Cloud-Music-DiscordRPC/releases/latest)
   
 ### Info / 需知
 * This application will auto launch on system start. If you don't want to do this, disable it in taskmgr.
