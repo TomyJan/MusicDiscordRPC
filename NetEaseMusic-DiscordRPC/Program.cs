@@ -221,6 +221,7 @@ namespace NetEaseMusic_DiscordRPC
                 player.albumName = "Unknown Album";
                 player.endPlaying = -1;
                 UpdatePresenceAdvancedInfo();
+                player.loadingApi = false;
                 return;
             }
 
@@ -506,8 +507,6 @@ namespace NetEaseMusic_DiscordRPC
                 Console.WriteLine("Fatal ERROR!");
                 return;
             }
-
-            //Console.WriteLine("try to update new result");
 
             // New song & the previous song is already loaded? else we'll try to load again the next second
             if (!currentPlaying.Equals(player.currentPlaying) && !player.loadingApi && !global.musicinfoClient.IsBusy)
