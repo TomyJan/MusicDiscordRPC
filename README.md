@@ -1,9 +1,10 @@
-# 网易云音乐 Discord Rpc
-  
 ## [English version](#netease-cloud-music-discord-rpc)
 
-* 将网易云音乐动态同步到Discord [RPC](https://discordapp.com/rich-presence).  
-  
+# 网易云音乐 Discord Rpc
+
+* 将网易云音乐动态同步到Discord [RPC](https://discordapp.com/rich-presence). 
+* Enables Discord [Rich Presence](https://discordapp.com/rich-presence) For Netease Cloud Music.  
+
 ### [Download / 下载](https://github.com/Ynng/NetEase-Cloud-Music-DiscordRPC/releases/latest)
   
 ### Screenshot / 截图
@@ -61,8 +62,6 @@
   
 
 # Netease Cloud Music Discord Rpc
-  
-* Enables Discord [Rich Presence](https://discordapp.com/rich-presence) For Netease Cloud Music.  
   
 ### Info
 * This application will auto launch on system start. If you don't want to do this, disable it in taskmgr.
