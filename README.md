@@ -64,9 +64,8 @@
 # Netease Cloud Music Discord Rpc
   
 ### Info
-* This application will auto launch on system start. If you don't want to do this, disable it in taskmgr.
-* If you are using album cover and you change songs too fast, the album cover might disappear and stop working for **a few minutes**. You just have to wait.
-
+* This application will auto launch on system start. If you don't want this, disable it in task manager.
+* If you are using album cover and change songs too frequently, the album cover might disappear and stop working for **a few minutes**. You just have to wait.
   
 ### Feature
 * Sync song information to Discord.
