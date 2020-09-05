@@ -82,7 +82,7 @@
 * You can only add Rich Presence assets to your own Discord Applications, so you'd have to create one.
 
 1. Go to **https://discord.com/developers/applications** and login
-2. **"New Application"** button on the right top corner
+2. Click on the **"New Application"** button on the right top corner
 3. Give it a name, this name will be displayed as the "game" you are playing when using this software
 ![screenshot](https://i.imgur.com/oKiRiqj.png)
 1. Copy the **Client ID** to line 1 of secret.txt
@@ -91,11 +91,11 @@
 
 * I've included some netease music logo in the "default images" folder in release.zip if you want to use that
 
-1. Copy the **asset name** and paste it to line 2 of secret.txt
+7. Copy the **asset name** and paste it to line 2 of secret.txt
 
 ##### Token
 * Displaying of the album cover will require your discord user token.
-* Automating user accounts is technically against TOS, use at your own risk.
+* Automating user accounts is technically against TOS. I have never seen anyone getting banned for this, but **use at your own risk**!
 
 1. Open Discord
 2. Press **Ctrl+Shift+I** to show developer tools
