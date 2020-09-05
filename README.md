@@ -1,4 +1,4 @@
-## [English version](#netease-cloud-music-discord-rpc)
+## [English Readme](#netease-cloud-music-discord-rpc)
 
 # 网易云音乐 Discord Rpc
 
