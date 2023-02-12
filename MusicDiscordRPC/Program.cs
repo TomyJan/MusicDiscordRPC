@@ -485,7 +485,7 @@ namespace NetEaseMusic_DiscordRPC
                 {
                     Win32Api.User32.GetClassName(hWnd, strbuilder, 256);
 
-                    if (strbuilder.ToString().Equals("OrpheusBrowserHost"))
+                    if (strbuilder.ToString().Equals("OrpheusBrowserHost") || strbuilder.ToString().Equals("QQMusic_Daemon_Wnd"))
                     {
                         // clear data
                         strbuilder.Clear();
@@ -579,11 +579,14 @@ namespace NetEaseMusic_DiscordRPC
                 {
                     global.presence.details = currentPlaying;
                     global.presence.state = string.Empty;
+                    Console.WriteLine(text.Length.ToString());
                 }
 
                 UpdatePresenceAdvancedInfo();
 
                 // logging
+                Console.WriteLine(global.presence.details);
+                Console.WriteLine(global.presence.state);
                 Console.WriteLine("Updated Rich Presence");
             }
         }
