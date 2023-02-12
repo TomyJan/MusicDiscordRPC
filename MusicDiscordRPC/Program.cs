@@ -124,13 +124,14 @@ namespace NetEaseMusic_DiscordRPC
                     info.ApplicationId = sr.ReadLine().Trim();
                     info.DefaultPresenceImageKey = sr.ReadLine().Trim();
                     info.DiscordUserToken = sr.ReadLine().Trim();
-                    if(!sr.ReadLine().Trim().Trim().Equals("true"))
+                    string line = sr.ReadLine().Trim();
+                    if (!line.Equals("true"))
                         // Hide window
                         Win32Api.User32.ShowWindow(Process.GetCurrentProcess().MainWindowHandle, Win32Api.User32.SW_HIDE);
                 }
             }catch(Exception e)
             {
-                MessageBox.Show("Failed to read secret.txt, refer to readme.md for help!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Failed to read secret.txt, refer to readme.md for help!\n\n"+e, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(-1);
             }
 
